@@ -6,7 +6,9 @@ import com.practo1.exception.PatientNotFoundException;
 import com.practo1.repository.AppointmentRepository;
 import com.practo1.repository.DoctorRepository;
 import com.practo1.repository.PatientRepository;
+import com.practo1.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Service
 public class AppoinmentService {
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
@@ -29,7 +33,9 @@ public class AppoinmentService {
             if (isSlotAvailable(appointment.getAppointmentDate(), appointment.getAppointmentTime())) {
 
                 appointmentRepository.save(appointment);
+                emailService.sendAppointmentConfirmationEmail(byPatientId, appointment);
                 return "Appointment booked successfully.";
+
             } else {
                 return "Slot is already booked for the selected date and time.";
             }

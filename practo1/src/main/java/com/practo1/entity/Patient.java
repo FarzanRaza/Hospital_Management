@@ -18,4 +18,5 @@ public class Patient {
     private String patientName;
     private String disease;
     private int patientId;
+    private String email;
 }
